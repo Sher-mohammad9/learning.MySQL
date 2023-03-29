@@ -115,9 +115,75 @@ SELECT * FROM fees ORDER BY fee DESC;
 SELECT * FROM fees ORDER BY fee DESC WHERE condition;
 ~~~
 
+### Find khan
 
+~~~
+SELECT * FORM students WHERE sName LIKE '%khan%';
+~~~
 
+### where studentid between 5 and 10
 
+~~~
+SELECT * FROM students WHERE sId BETWEEN 5 AND 8;
+~~~
+
+### Rename fathername column to mothername;
+
+~~~
+ALTER TABLE students RENAME COLUMN fName To mName;
+~~~
+
+### kaunse month me sbse jyada fees aayi hai;
+
+~~~
+SELECT mobths, SUM(amount) AS total FROM fees GROUP BY months ORDER BY total DESC LIMIT 1;
+~~~
+
+### kaunse month me sbse kam fees aayi hai
+
+~~~
+SELECT months, SUM(amount) AS total FROM fees GROUP BY mounts ORDER BY total ASC LIMIT 1;
+~~~
+
+### sbse jyada fees kis student ne di hai
+
+~~~
+SELECT sId, SUM(amount)	 AS total FROM fees GROUP BY sId ORDER BY total DESC LIMIT 1;
+
+SELECT * FROM students WHERE sId = ?
+~~~
+
+### sbse kam fees kis student ne di hai
+
+~~~
+SELECT sId, SUM(amount) AS total FROM fees GROUP BY sId ORDER BY total ASC LIMIT 1;]
+
+SELECT * FROM students WHERE sId = ?
+~~~
+
+### aise kaunse student hai jinhone ek b bar fee ni di hai
+
+~~~
+SELECT DISTINCT * FROM fees WHERE sId;
+
+SELECT * FROM students WHERE sId NOT IN (1,2,3,4,5,6,7,8,9,10);
+~~~
+
+### aise kaunse students hai jinka mobile and fathername ni hai db me
+
+~~~
+SELECT * FROM students WHERE fNAME IS NULL AND mNumber IS NULL;
+
+SELECT DISTINCT * FROM students WHERE sId;
+~~~
+
+### vo sare students ka record delete krdo jinhone koi fees ni di hai
+
+~~~
+SELECT DISTINCT * FROM fees WHERE sId;
+
+DELETE FROM students WHERE sId NOT IN (1,2,3,4,5,6,7,8,9,10);
+~~~
 
 
 
