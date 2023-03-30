@@ -185,6 +185,256 @@ SELECT DISTINCT * FROM fees WHERE sId;
 DELETE FROM students WHERE sId NOT IN (1,2,3,4,5,6,7,8,9,10);
 ~~~
 
+# Test 2
+
+### 1.Vo students ke name show kro jinke total average marks 60% se kam hai.
+
+~~~
+SELECT ResultIdStudent, AVG(Obtainedmarks) AS tm FROM result GROUP BY ResultIdStudent HAVING TM < 60;
+
+SELECT * FROM students WHERE sId IN (?);
+~~~
+
+### 2.Topper student kaun hai overall uska naam btao.
+
+~~~
+SELECT ResultIdStudent, AVG(Obtainedmarks) AS tm FROM result GROUP BY ResultIdStudent ORDER BY tm DESC LIMIT 1;
+
+SELECT * FROM students WHERE sId IN (?);
+~~~
+
+### 3.Particular subject me kaun topper hai us student ka naam btao.
+
+~~~
+SELECT ResultIdStudent, AVG(Obtainedmarks) AS tm FROM result WHERE Subject = 'JavaScript' GROUP BY ResultIdStudent ORDER BY TM DESC LIMIT 1;
+
+SELECT * FROM students WHERE sId IN (?);
+~~~
+
+### 4.Aise kaunse students hai jinhone 1 b tesr ni dia.
+
+~~~
+SELECT DISTINCT ResultIdStudent FROM result WHERE ResultIdStudent;
+
+SELECT * FROM students WHERE sId NOT IN (?);
+~~~
+
+### 5.2nd rank pr kaunsa student hai kisi subject me vo btao.
+
+~~~
+SELECT ResultIdStudents, AVG(Obtainedmarks) AS tm FROM result WHERE Subject = 'Node.js'
+GROUP BY ResultIdStudents ORDER BY tm DESC LIMIT 2;
+
+SELECT * FROM students WHERE sId IN (?);
+~~~
+
+### 6.How many students are there in the student table?
+
+~~~
+SELECT COUNT(studentsId) FROM student;
+~~~
+
+### 7.What is the name of the student with studentid = 5?
+
+~~~
+SELECT studentName FROM  studentsId = 5;
+~~~
+
+### 8.How many students are there from the city of Mumbai?
+
+~~~
+SELECT * FROM student WHERE city = 'Mumbai';
+~~~
+
+### 9.What is the email address of the student whose name is 'John Doe'?
+
+~~~
+SELECT * FROM student WHERE email LIKE '%John Doe%';
+~~~
+
+### 10.What is the total amount of fees paid by the student with studentid = 10?
+
+~~~
+SELECT amount FROM fees WHERE studentid = 10;
+~~~
+
+### 11.What is the highest amount of fees paid by any student?
+~~~
+SELECT studentId, SUM(amount) AS tf FROM fees GROUP BY studentId ORDER BY DESC tf LIMIT 1;
+
+SELECT * FROM student WHERE studentId IN (?);
+~~~
+
+### 12.What is the average amount of fees paid by all students?
+
+~~~
+SELECT AVG(amount) FROM fees studentId;
+~~~
+
+### 13.What is the name of the student who paid the highest amount of fees?
+
+~~~
+SELECT studentId, SUM(amount) AS tf FROM fees GROUP BY studentId ORDER BY DESC tf LIMIT 1;
+
+SELECT * FROM student WHERE studentId IN (?);
+~~~
+
+### 14.What is the total marks obtained by the student with studentid = 7?
+
+~~~
+SELECT SUM(obtainedMarks) FROM result WHERE studentid = 7;
+~~~~
+
+### 15.What is the highest marks obtained by any student?
+
+~~~
+SELECT studentId, SUM(obtainedMarks) AS hm FROM result GROUP BY studentId ORDER BY DESC hm LIMIT 1;
+
+SELECT * FROM student WHERE studentId = ?;
+~~~
+
+### 16.What is the average marks obtained by all students?
+
+~~~
+SELECT AVG(obtainedMarks) FROM student WHERE studentId = ?;
+~~~
+
+### 17.What is the name of the student who obtained the highest marks?
+
+~~~
+SELECT studentId, SUM(obtainedMarks) AS hm FROM result GROUP BY studentId ORDER BY DESC hm LIMIT 1;
+
+SELECT * FROM student WHERE studentId = ?;
+~~~
+
+### 18. What is the total amount of fees paid by all students from the city of Delhi?
+
+~~~
+SELECT studentId FROM student WHERE city = 'Delhi';
+
+SELECT SUM(amount) FROM fees WHERE IN (?);
+~~~
+
+### 19.What is the total amount of fees paid for the month of January?
+
+~~~
+SELECT SUM(amount) FROM fees WHERE month = 'January';
+~~~
+
+### 20.What is the total amount of fees paid by all students for the subject of mathematics?
+
+~~~
+SELECT resultId FROM result WHERE Subject = 'JavaScript';
+
+SELECT SUM(amount) FROM fees WHERE IN (?);
+~~~
+
+### 21.What is the average marks obtained by the student with studentid = 9 for the subject of science?
+
+~~~
+SELECT studentId FROM result WHERE Subject = 'Node.js';
+
+SELECT AVG(obtainedMarks) FROM result WHERE studentid = 9;
+~~~
+
+### 22.What is the name of the student who paid the highest amount of fees for the month of February?
+
+~~~
+SELECT studentId,SUM(amount) FROM fees WHERE month = 'February' GROUP BY studentId ORDER BY hf DESC LIMIT 1;
+
+SELECT * FROM student WHERE studentId IN (?);
+~~~
+
+### 23.What is the name of the student who obtained the highest marks in the subject of English?
+
+~~~
+SELECT studentId, SUM(obtainedMarks) AS hm FROM result WHERE Subject = 'JavaScript' GROUP BY studentId ORDER BY DESC hm LIMIT 1;
+
+SELECT * FROM student WHERE studentId = ?;
+~~~
+
+### 24.What is the name of the student who paid the highest amount of fees for the subject of computer science?
+
+~~~
+SELECT studentId, SUM(amount) AS hf FROM fees WHERE Subject = 'JavaScript' GROUP BY studentId ORDER BY hf DESC LIMIT 1;
+
+SELECT * FROM student WHERE IN (?);
+~~~
+
+### 25.What is the name of the student who obtained the highest marks in the subject of mathematics for the test date of '2022-02-15'?
+
+~~~
+SELECT studentId, obtainedMarks  AS hf FROM fees WHERE Subject = 'JavaScript' AND date = '2022-02-15' GROUP BY studentId ORDER BY hf DESC LIMIT 1;
+
+SELECT * FROM student WHERE IN (?);
+~~~
+
+### 26.What is the total amount of fees paid by all students whose fathers' names start with the letter 'S'?
+
+~~~
+SELECT studentId FROM student WFERE fName LIKE 'S%'
+
+SELECT SUM(amount) FROM fees WHERE IN (?);
+~~~
+
+### 27.What is the average marks obtained by all students for the subject of science?
+
+~~~
+SELECT studentId FROM result WHERE Subject = 'Node.js';
+
+SELECT AVG(obtainedMarks) FROM result WHERE IN (?);
+~~~
+
+### 28.What is the name of the student who paid the highest amount of fees for the year 2022?
+
+~~~
+SELECT amount AS hf FROM fees WHERE year = '2022' GROUP BY amount ORDER BY hf DESC LIMIT 1;
+~~~
+
+### 29.What is the name of the student who obtained the highest marks in the subject of English for the test date of '2022-03-15'?
+
+~~~
+SELECT studentId,obtainedMarks AS hm FROM fees WHERE date = '2022-03-15' GROUP BY amount ORDER BY hm DESC LIMIT 1;
+
+SELECT * FROM student WHERE studentId = ?;
+~~~
+
+### 30.What is the name of the student who paid the second highest amount of fees for the subject of computer science?
+
+~~~
+SELECT studentId, SUM(amount) AS shf FROM fees WHERE subject = 'JavaScript' GROUP BY studentId ORDER BY shf DESC LIMIT 2;
+
+SELECT * FROM student WHERE studentId = ?;
+~~~
+
+### 31.What is the name of the student who obtained the highest marks in the subject of mathematics and science combined?
+
+~~~
+SELECT studentId,SUM(obtainedMarks) AS hm FROM result WHERE subject = 'JavaSript' AND 
+subject = 'Node.js' GROUP BY studentId ORDER BY hm DESC LIMIT 1;
+
+SELECT * FROM student WHERE studentId = ?;
+~~~
+
+### 32.What is the name of the student who paid the highest amount of fees for the month of March and the subject of English combined?
+
+~~~
+SELECT studentId,SUM(amount) AS hf FROM fees WHERE subject = 'JavaSript' AND 
+month = 'March' GROUP BY studentId ORDER BY hm DESC LIMIT 1;
+
+SELECT * FROM student WHERE studentId = ?;
+~~~
+
+### 33.What is the name of the student who obtained the highest marks for the test date of '2022-04-15' in any subject?
+
+~~~
+SELECT studentId, obtainedMarks AS hm FROM result WHERE date = '2022-04-15' GROUP BY studentId ORDER BY hm DESC LIMIT 1;
+
+SELECT * FROM student WHERE studentId = ?;
+~~~
+
+
+
 
 
 
