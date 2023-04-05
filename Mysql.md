@@ -433,6 +433,109 @@ SELECT studentId, obtainedMarks AS hm FROM result WHERE date = '2022-04-15' GROU
 SELECT * FROM student WHERE studentId = ?;
 ~~~
 
+# Test 3
+
+#### Q1What is the query to get all the details of a student along with the fees and result data for the student?
+~~~
+SELECT * FROM students JOIN cochingFee ON students.sId = cochingFee.sId JOIN result ON result.ResultIdStudent = cochingFee.sId;
+~~~
+
+#### Q2 How can we retrieve the data of a student who has paid fees for the month of January?
+~~~
+SELECT * FROM students JOIN cochingFee ON students.sId = cochingFee.sId AND cochingFee.months = 'February';
+~~~
+
+#### Q3 What is the query to get the list of all students who have not yet paid their fees?
+~~~
+SELECT * FROM students LEFT JOIN cochingFee ON students.sId IN(cochingFee.sId);
+
+SELECT * FROM students WHERE SID NOT IN (SELECT sId FROM cochingFee);
+~~~
+
+#### Q4 How can we fetch the list of students who scored more than 80 marks in any subject in the result table?
+~~~
+SELECT * FROM students JOIN result ON students.sId = result.ResultIdStudent AND result.Obtainedmarks > 80; 
+~~~
+
+#### Q5 What is the query to get the details of students along with the total amount of fees they have paid so far?
+~~~ 
+SELECT *, SUM(amount) AS total FROM students JOIN cochingFee ON students.sId = cochingFee.sId;
+~~~
+
+#### Q6 How can we fetch the list of all students along with their fees data and result data, even if they do not have any data in the fees or result table?
+~~~
+SELECT * FROM students LEFT JOIN cochingFee ON students.sId IN(cochingFee.sId) LEFT JOIN result ON cochingFee.sId IN(result.ResultIdStudent);
+~~~
+
+#### Q7 What is the query to get the name, email address, and mobile number of all the students who belong to the city of "Delhi"?
+~~~
+SELECT sName,fName,mNumber FROM students WHERE city = 'Merta';
+~~~
+
+#### Q8 How can we retrieve the details of students who belong to the city of "Mumbai" and have paid their fees for the month of February?
+~~~
+SELECT * FROM students JOIN cochingFee ON students.sId IN (cochingFee.sId) AND cochingFee.months = 'February' AND students.city = 'Merta';
+~~~
+
+#### Q9 What is the query to get the name, email address, and total amount of fees paid by all the students who have paid their fees?
+~~~
+SELECT sName,fNAME, SUM(amount) AS total FROM students JOIN cochingFee ON students.sId IN (cochingFee.sId) GROUP BY sName,fNAME;
+~~~
+
+#### Q10 How can we fetch the details of all students who have taken any test before a specific date?
+~~~
+SELECT * FROM students JOIN result ON students.sId IN(result.ResultIdStudent) AND result.Testdate < '2023-03-30';
+~~~
+
+#### Q11 What is the query to get the name, email address, and subject name of all the students who have scored more than 90 marks in any subject?
+~~~
+SELECT SNAME,FNAME, Subject FROM students JOIN result ON students.sId IN(result.ResultIdStudent) AND result.Obtainedmarks > 90;
+~~~
+
+#### Q12 How can we retrieve the details of students who belong to the city of "Bangalore" and have scored less than 50 marks in any subject?
+~~~
+SELECT * FROM students JOIN result ON students.sId IN(result.ResultIdStudent) AND result.Obtainedmarks < 50 AND students.city = 'Merta';
+~~~
+
+#### Q13 What is the query to get the details of all students along with their fees and result data, sorted by their name in ascending order?
+~~~
+SELECT * FROM students JOIN cochingFee ON students.sId = cochingFee.sId JOIN result ON result.ResultIdStudent = cochingFee.sId ORDER BY sName;
+~~~
+
+#### Q14 How can we fetch the name, email address, and total amount of fees paid by all the students who have not paid their fees yet?
+~~~
+SELECT sName,fNAME,SUM(amount)FROM students LEFT JOIN cochingFee ON students.sId IN(cochingFee.sId) GROUP BY sName,fNAME;
+~~~
+
+#### Q15 What is the query to get the details of all students who have paid their fees for the month of March and have scored more than 70 marks in any subject?
+~~~
+SELECT * FROM students JOIN cochingFee ON students.sId IN(cochingFee.sId) AND cochingFee.months = 'March' JOIN result ON result.ResultIdStudent IN(cochingFee.sId) AND result.Obtainedmarks > 70;
+~~~
+
+#### Q16 How can we retrieve the details of students who have not taken any test yet?
+~~~
+SELECT * FROM students LEFT JOIN result ON students.sId IN (result.ResultIdStudent);
+~~~
+
+#### Q17 What is the query to get the name, email address, and subject name of all the students who have scored less than 40 marks in any subject?
+~~~
+SELECT sName,fNAME,Subject FROM students JOIN result ON students.sId IN (result.ResultIdStudent) and result.Obtainedmarks < 40;
+~~~
+
+#### Q18 How can we fetch the details of students who belong to the city of "Pune" and have paid their fees for the month of January?
+~~~
+SELECT * FROM students JOIN cochingFee ON students.sId IN(cochingFee.sId) AND students.city = 'Peeh' AND cochingFee.months = 'January';
+~~~
+
+#### Q19 What is the query to get the name, email address, and mobile number of all the students who have not taken any test yet?
+~~~
+SELECT sName,fNAME,mNumber FROM students LEFT JOIN result ON students.sId IN (result.ResultIdStudent);
+~~~
+
+#### Q20 How can we retrieve the details of students who have scored more than 60 marks in all the subjects they have taken tests for?
+~~~
+SELECT * FROM students JOIN result ON students.sId IN (result.ResultIdStudent) AND result.Obtainedmarks > 60;
+~~~
 
 
 
