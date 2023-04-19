@@ -68,7 +68,7 @@ FOREIGN KEY (courseId) REFERENCES course(courseId)
 CREATE TABLE Fee(
 feeId INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 amount INTEGER NOT NULL,
-months DATE NOT NULL,
+feeMonth DATE NOT NULL,
 studentId INTEGER UNSIGNED,
 FOREIGN KEY (studentId) REFERENCES student(studentId)
 );
@@ -108,7 +108,7 @@ FOREIGN KEY (studentId) REFERENCES student(studentId)
 CREATE TABLE employee(
 employeeId INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 employeeName VARCHAR(155) NOT NULL,
-employeeWork VARCHAR(155) NOT NULL,
+emp_Designation VARCHAR(155) NOT NULL,
 employeeTypeId INTEGER UNSIGNED,
 FOREIGN KEY (employeeTypeId) REFERENCES employeeType(employeeTypeId)
 );
@@ -129,7 +129,7 @@ employeeType VARCHAR(155) NOT NULL
 CREATE TABLE salary(
 salaryId INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 amount INTEGER NOT NULL,
-month DATE NOT NULL,
+salaryMonth DATE NOT NULL,
 employeeId INTEGER UNSIGNED,
 FOREIGN KEY(employeeId) REFERENCES employee(employeeId)
 );
@@ -150,46 +150,42 @@ expenseDate DATE NOT NULL
 
 ### 1. Name of all students jinhone abi tak koi fees deposit ni ki
 ```sql
-SELECT * FROM student WHERE studentId NOT IN (SELECT studentId FROM Fee);
+SELECT * FROM student WHERE studentId NOT IN (SELECT DISTINCT studentId FROM Fee);
 ```
 
 ### 2. Sbse jyada fees kis student ne di hai. naam btao
 ```sql
-SELECT studentName, SUM(amount) AS total FROM student JOIN Fee ON student.studentId = Fee.studentId GROUP BY studentName ORDER  BY total DESC LIMIT 1;
+SELECT studentId, studentName, SUM(amount) AS total FROM student JOIN Fee ON student.studentId = Fee.studentId GROUP BY studentId, studentName ORDER  BY total DESC LIMIT 1;
 ```
 
 ### 3. Sbse jyada fees me 2nd number pr jo student hai uska naam btao 
 ```sql
-SELECT studentName, SUM(amount) AS total FROM student JOIN Fee ON student.studentId = Fee.studentId GROUP BY studentName ORDER  BY total DESC LIMIT 2;
+SELECT studentId, studentName, SUM(amount) AS total FROM student JOIN Fee ON student.studentId = Fee.studentId GROUP BY studentId, studentName ORDER  BY total DESC LIMIT 1,1;
 ```
 
 ### 4. Coaching me total kitne employees hain unka naam and designation/role show krvao
 ```sql
-SELECT COUNT(*), employeeName, employeeWork FROM employee GROUP BY employeeName, employeeWork;
+SELECT employeeId, employeeName, emp_Designation FROM employee GROUP BY employeeId, employeeName, emp_Designation;
 ```
 
 ### 5. Kis employee ne kitni salary uthayi hai ab tak vo btao ya month wise
 ```sql
-SELECT employeeName, SUM(amount) FROM employee JOIN salary ON employee.employeeId = salary.employeeId GROUP BY employeeName;
+SELECT employeeId, employeeName, SUM(amount) FROM employee JOIN salary ON employee.employeeId = salary.employeeId GROUP BY employeeId, employeeName;
 ```
 
 ### 6. Vo sare students jo abi tak 1 b test me fail hue hai unka naam, subject, totalmarks, passingmarks, obtainedmarks btao
 ```sql
-SELECT student.studentName, test.subjectName, result.totalMarks, test.passingmarks, result.obtainedmarks, result.resultShow FROM student JOIN result ON student.studentId = result.studentId  JOIN test ON student.studentId = test.studentId  AND test.passingmarks > result.obtainedmarks;
+SELECT student.studentId, student.studentName, test.subjectName, result.totalMarks, test.passingmarks, result.obtainedmarks, result.resultShow FROM student JOIN result ON student.studentId = result.studentId  JOIN test ON student.studentId = test.studentId  AND test.passingmarks > result.obtainedmarks GROUP BY student.studentId, student.studentName, test.subjectName, result.totalMarks, test.passingmarks, result.obtainedmarks, result.resultShow;
 ```
 
 ### 7. Particular month ka kharcha btao. Kharche me tume salary and expenses dono add krne hai 
 ```sql
-SELECT sum(salary.amount) as salray, sum(expense.amount) as expense, sum(salary.amount) + sum(expense.amount) AS   
-Total FROM salary LEFT JOIN expense ON salaryId = expenseId;
-```
-```sql
-SELECT (SELECT SUM(amount) FROM salary) + (SELECT SUM(amount) FROM expense) as Total_amount; 
+SELECT (SELECT SUM(amount) FROM salary WHERE MONTH(month) = 2) + (SELECT SUM(amount) FROM expense WHERE MONTH(expenseDate) = 2) as Total_amount; 
 ```
 
 ### 8. Particular month me total income btao 
 ```sql
-SELECT SUM(amount) FROM Fee WHERE months = '2023-01-31'
+SELECT SUM(amount) FROM Fee WHERE MONTH(month) = 2
 ```
 
 ### 9. Total income aaj tak 
@@ -199,45 +195,45 @@ SELECT SUM(amount) FROM Fee;
 
 ### 10. Total kharche aaj tak 
 ```sql
-SELECT SUM(amount) FROM expense;
+SELECT (SELECT SUM(amount) FROM salary) + (SELECT SUM(amount) FROM expense) as Total_amount; 
 ```
 
 ### 11. Kis course me kitne students hai vo btane hai coursename startdate time totalstudents
 ```sql
-SELECT course.courseName, course.startDate, course.classTime, COUNT(course.courseName) 
+SELECT course.courseId, course.courseName, course.startDate, course.classTime, COUNT(course.courseId) 
 FROM student JOIN studentCourse ON student.studentId = studentCourse.studentId 
 JOIN course ON studentCourse.courseId = course.courseId 
-GROUP BY course.courseName, course.startDate, course.classTime; 
+GROUP BY course.courseId, course.courseName, course.startDate, course.classTime; 
 ```
 
 ### 12. Vo course btana hai jisme sbse jyada income hui hai 
 ```sql
-SELECT course.courseName, SUM(amount) AS total_amount FROM studentCourse 
+SELECT course.courseId, course.courseName, SUM(amount) AS total_amount FROM studentCourse 
 JOIN Fee ON Fee.studentId = studentCourse.studentId 
 JOIN course ON course.courseId = studentCourse.courseId 
-GROUP BY course.courseName ORDER BY total_amount DESC LIMIT 1;
+GROUP BY course.courseId, course.courseName ORDER BY total_amount DESC LIMIT 1;
 ```
 
 ### 13. Vo course btana hai jisme sbse kam income hui hai 
 ```sql
-SELECT course.courseName, SUM(amount) AS total_amount FROM studentCourse 
+SELECT course.courseId, course.courseName, SUM(amount) AS total_amount FROM studentCourse 
 JOIN Fee ON Fee.studentId = studentCourse.studentId 
 JOIN course ON course.courseId = studentCourse.courseId 
-GROUP BY course.courseName ORDER BY total_amount LIMIT 1;
+GROUP BY course.courseId, course.courseName ORDER BY total_amount LIMIT 1;
 ```
 
 ### 14. Kaunsa course hai jisme sbse jyada students hai 
 ```sql
-SELECT course.courseName, COUNT(student.studentId) AS total_student FROM student 
+SELECT course.courseId, course.courseName, COUNT(student.studentId) AS total_student FROM student 
 JOIN studentCourse ON student.studentId = studentCourse.studentId 
-JOIN course ON course.courseId = studentCourse.courseId GROUP BY course.courseName ORDER BY total_student DESC LIMIT 1;
+JOIN course ON course.courseId = studentCourse.courseId GROUP BY course.courseId, course.courseName ORDER BY total_student DESC LIMIT 1;
 ```
 
 ### 15. Kaunsa course hai jisme sbse kam students hain
 ```sql
-SELECT course.courseName, COUNT(student.studentId) AS total_student FROM student 
+SELECT course.courseId, course.courseName, COUNT(student.studentId) AS total_student FROM student 
 JOIN studentCourse ON student.studentId = studentCourse.studentId 
-JOIN course ON course.courseId = studentCourse.courseId GROUP BY course.courseName ORDER BY total_student LIMIT 1;
+JOIN course ON course.courseId = studentCourse.courseId GROUP BY course.courseId, course.courseName ORDER BY total_student LIMIT 1;
 ```
 
 # Test 2
@@ -245,7 +241,7 @@ JOIN course ON course.courseId = studentCourse.courseId GROUP BY course.courseNa
 ### 1. Kaunsa course hai jisme koi admission ni hua hai
 
 ```sql
-SELECT courseName FROM course WHERE courseId NOT IN(SELECT courseId FROM studentCourse);
+SELECT courseName FROM course WHERE courseId NOT IN(SELECT DISTINCT courseId FROM studentCourse);
 ```
 
 ### 2. Sbse jyada expense from expense table kis chiz ke liye hua hai 
@@ -259,16 +255,16 @@ SELECT expenseDetail, SUM(amount) AS maximum_ExpD FROM expense GROUP BY expenseD
 - Shahrukh Teacher 80000
 - Rehna Peon 20000
 ```sql
-SELECT employee.employeeName, employee.employeeWork, SUM(amount) AS total_salary 
+SELECT employee.employeeId, employee.employeeName, employee.emp_Designation, SUM(amount) AS total_salary 
 FROM employee LEFT JOIN salary ON salary.employeeId = employee.employeeId 
 LEFT JOIN employeeType ON employee.employeeId = employeeType.employeeTypeId 
-GROUP BY employee.employeeName, employee.employeeWork ORDER BY total_salary DESC;
+GROUP BY employee.employeeId, employee.employeeName, employee.emp_Designation ORDER BY total_salary DESC;
 ```
 
 ### 4. Course table ko alter krna hai aur usme ek teacherid column add krna hai jo ki foreign key hogi 
 ```sql
 ALTER TABLE course ADD COLUMN teacherId INTEGER UNSIGNED;
-ALTER TABLE course ADD FOREIGN KEY(teacherId) REFERENCES student(studentId);
+ALTER TABLE course ADD FOREIGN KEY(teacherId) REFERENCES employee(employeeId);
 ```
 
 ### 5. Kaunse course me kaunsa teacher pdhata hai uski detail print krvani hai CourseName CourseTime TeacherName
@@ -289,15 +285,15 @@ SELECT courseName, classTime, employeeName FROM course 	JOIN employee ON course.
 - Shahrukh JavaScript 80000
 - Rehna HTML 20000
 ```sql
-SELECT student.studentName, course.courseName, SUM(amount) AS total_fee FROM student 
+SELECT student.studentId, student.studentName, course.courseName, SUM(amount) AS total_fee FROM student 
 JOIN studentCourse ON  student.studentId = studentCourse.studentId 
 JOIN Fee ON student.studentId = Fee.studentId 
 JOIN course ON course.courseId = studentCourse.courseId 
-GROUP BY student.studentName, course.courseName ORDER BY total_fee DESC;
+GROUP BY student.studentId, student.studentName, course.courseName ORDER BY total_fee DESC;
 ```
 ### 7. Kisi b year ka total profit/loss btana hai Total fees - (total salary + total expenses)
 ```sql
-SELECT (SELECT SUM(amount) FROM Fee WHERE YEAR(months)) - ((SELECT SUM(amount) FROM salary WHERE YEAR(month)) + (SELECT SUM(amount) FROM expense WHERE YEAR(expenseDate))) AS total_amount;
+SELECT (SELECT SUM(amount) FROM Fee WHERE YEAR(feeMonth) = 2023) - ((SELECT SUM(amount) FROM salary WHERE YEAR(salaryMonth) = 2023) + (SELECT SUM(amount) FROM expense WHERE YEAR(expenseDate) = 2023)) AS total_amount;
 ```
 
 ### 8. Student count list print krvani hai unki total batch count ke descending order me
@@ -305,10 +301,10 @@ SELECT (SELECT SUM(amount) FROM Fee WHERE YEAR(months)) - ((SELECT SUM(amount) F
 - JS 9:00PM 10/01/2023  10/07/2023 20
 - HTML 10:00AM 10/01/2023  10/07/2023 40
 ```sql
-SELECT course.courseName, course.classTime, course.startDate, course.endDate, COUNT(student.studentId) AS total_student FROM course 
+SELECT course.courseId, course.courseName, course.classTime, course.startDate, course.endDate, COUNT(student.studentId) AS total_student FROM course 
 JOIN studentCourse ON studentCourse.courseId = course.courseId 
 JOIN student ON student.studentId = studentCourse.studentId
-GROUP BY course.courseName, course.classTime, course.startDate, course.endDate ORDER BY total_student DESC;
+GROUP BY course.courseId, course.courseName, course.classTime, course.startDate, course.endDate ORDER BY total_student DESC;
 ```
 
 ### 9. Student list print krvani hai unki total student in pincode ke descending order me
@@ -342,12 +338,12 @@ f.amount, address;
 - Sajid 945655445 500 400 80 1
 ```sql
 CREATE VIEW studentResult AS 
-SELECT s.studentName, s.mobileNumber, r.totalMarks, AVG(r.obtainedMarks) AS AvgMarks
+SELECT s.studentId, s.studentName, s.mobileNumber, r.totalMarks, AVG(r.obtainedMarks) AS AvgMarks
 FROM student s 
 LEFT JOIN result r ON s.studentId = r.studentId 
-GROUP BY s.studentName, s.mobileNumber, r.totalMarks ORDER BY AvgMarks DESC;
+GROUP BY s.studentId, s.studentName, s.mobileNumber, r.totalMarks ORDER BY AvgMarks DESC;
 
-SELECT *, ROW_NUMBER() OVER(ORDR BY AvgMarks) FROM studentResult;
+SELECT *, ROW_NUMBER() OVER(ORDR BY AvgMarks) AS rank FROM studentResult;
 ```
 
 ### 12. Vo student jinhone koi b fees jama ni krayi hai unko delete kr dena hai student table se  Aur iske child records Address, Result tables me hai vo vha se b delete krna hai
@@ -366,30 +362,30 @@ SET FOREIGN_KEY_CHECKS = 1; -- to re-enable them
 - 2023 Feb 25000
 - 2022 Dec 12000
 ```sql
-SELECT YEAR(expense.expenseDate) AS Year, MONTH(expense.expenseDate) AS month, SUM(amount) AS total_expense from expense GROUP BY Year,Month;
+SELECT YEAR(expense.expenseDate) AS Year, MONTH(expense.expenseDate) AS month, SUM(amount) AS total_expense from expense GROUP BY Year,Month ORDER BY total_expense DESC;
 ```
 
 ### 14. Kaunse teacher ke batch ke students ki performance sbse best hai 
 ```sql
-SELECT e.employeeName AS teacherName, s.studentName, c.courseName, AVG(r.obtainedMarks) AS marks 
+SELECT e.employeeId, e.employeeName, s.studentName, c.courseName, AVG(r.obtainedMarks) AS marks 
 FROM course c JOIN employee e ON c.teacherId = e.employeeId 
 JOIN studentCourse sc ON sc.courseId = c.courseId
 JOIN student s ON s.studentId = sc.studentId
 JOIN result r ON r.studentId = s.studentId
-GROUP BY teacherName, s.studentName, c.courseName ORDER BY marks DESC LIMIT 1; 
+GROUP BY e.employeeId, e.employeeName, s.studentName, c.courseName ORDER BY marks DESC LIMIT 1; 
 ```
 
 ### 15. ek view bnana hai 
 - TeacherName BatchName BatchStartDate BatchEndDate Designation TotalFeesDepositByThisBatch  TotalSalar
 ```sql
 CREATE VIEW teacherRecord AS
-SELECT e.employeeName, c.courseName, c.startDate, c.endDate, e.employeeWork, 
+SELECT e.employeeName, c.courseName, c.startDate, c.endDate, e.emp_Designation, 
 SUM(f.amount) AS This_Batch, SUM(sa.amount) AS total_salary 
 FROM employee e JOIN course c ON c.teacherId = e.employeeId
 JOIN studentCourse sc ON sc.courseId = c.courseId
 JOIN student s ON s.studentId = sc.studentId  
 JOIN Fee f on f.studentId = s.studentId
 JOIN salary sa ON sa.employeeId = e.employeeId
-GROUP BY e.employeeName, c.courseName, c.startDate, c.endDate, e.employeeWork;
+GROUP BY e.employeeName, c.courseName, c.startDate, c.endDate, e.emp_Designation;
 ```
 
