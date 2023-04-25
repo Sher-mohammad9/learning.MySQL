@@ -391,7 +391,8 @@ GROUP BY e.employeeName, c.courseName, c.startDate, c.endDate, e.emp_Designation
 
 # Test 3
 
-### 1. Student ka count print krvana hai desc order me unke city ke according. for example totalstudents cityname
+### 1. Student ka count print krvana hai desc order me unke city ke according. for example 
+- totalstudents cityname
 - 25 Jaipur 
 - 20 Nagaur
 ```sql
@@ -400,7 +401,7 @@ JOIN address a ON s.studentId = a.studentId AND city = 'Merta city';
 ```
 
 ### 2. Kisi student ki sare months me kitni fees aayi hai vo btani hai sare months ki ab tak 
-StudentName MonthName Fees 
+- StudentName MonthName Fees 
 - Sajid Feb, 2022 2000
 - Sajid March, 2022 1000
 - Sajid April 0
@@ -412,7 +413,7 @@ LEFT JOIN Fee f ON s.studentId = f.studentId
 GROUP BY s.studentId, s.studentName ORDER BY total_fee DESC;
 ```
 ### 3. Kisi particular test me total kitne students pass fail hue hai vo btana hai 
-TestId TestName TotalPass TotalFail
+- TestId TestName TotalPass TotalFail
 - 1 Nodejs 10 5
 - 2 JS 20 10
 ```sql
@@ -421,7 +422,7 @@ FROM result r JOIN test t ON t.testId = r.testId GROUP BY t.subjectName, r.resul
 ```
 
 ### 4. Kisi particular month me total kitne test hue hai vo btane hai 
-MonthName TotalTests
+- MonthName TotalTests
 - May 20
 - June 10
 ```sql
@@ -429,19 +430,19 @@ SELECT MONTH(testDate) AS monthName, COUNT(MONTH(testDate)) AS totalTest FROM te
 ```
 
 ### 5. Kisi particular designation pr kitne employees hai vo btana hai 
-Designation Count
-Teacher    10
-Peon 2
-Receptionist 1
+- Designation Count
+- Teacher    10
+- Peon 2
+- Receptionist 1
 ```sql 
 SELECT employeeWork, COUNT(employeeWork) AS totalEmp FROM employee GROUP BY employeeWork;
 ```
 
 ### 6. Kisi particular designation ke employees ki total salary particular month me kitni hai vo btana hai 
-Designation Month TotalSalary
-Teacher June 25000
-Peon June 10000
-Receptionist June 5000
+- Designation Month TotalSalary
+- Teacher June 25000
+- Peon June 10000
+- Receptionist June 5000
 ```sql
 SELECT e.employeeId, et.employeeType, Month(s.month), s.amount AS totalSalary FROM employee e
 JOIN salary s ON e.employeeId = s.salaryId 
