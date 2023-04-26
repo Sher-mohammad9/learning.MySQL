@@ -397,7 +397,7 @@ GROUP BY e.employeeName, c.courseName, c.startDate, c.endDate, e.emp_Designation
 - 20 Nagaur
 ```sql
 SELECT COUNT(s.studentId), a.City FROM student s 
-JOIN address a ON s.studentId = a.studentId AND city = 'Merta city';
+JOIN address a ON s.studentId = a.studentId GROUP BY a.City;
 ```
 
 ### 2. Kisi student ki sare months me kitni fees aayi hai vo btani hai sare months ki ab tak 
@@ -408,9 +408,8 @@ JOIN address a ON s.studentId = a.studentId AND city = 'Merta city';
 - Sajid May 1000
 Agar kisi month me koi fees ni aayi hai to 0 dhikana hai  
 ```sql
-SELECT s.studentId, s.studentName, IFNULL(SUM(f.amount), 0) AS total_fee FROM  student s
-LEFT JOIN Fee f ON s.studentId = f.studentId 
-GROUP BY s.studentId, s.studentName ORDER BY total_fee DESC;
+SELECT s.studentName, f.months, IFNULL(f.amount, 0) AS monthFee FROM  student s
+LEFT JOIN Fee f ON f.studentId = s.studentId GROUP BY s.studentName, f.months, monthFee;
 ```
 ### 3. Kisi particular test me total kitne students pass fail hue hai vo btana hai 
 - TestId TestName TotalPass TotalFail
@@ -444,10 +443,10 @@ SELECT employeeWork, COUNT(employeeWork) AS totalEmp FROM employee GROUP BY empl
 - Peon June 10000
 - Receptionist June 5000
 ```sql
-SELECT e.employeeId, et.employeeType, Month(s.month), s.amount AS totalSalary FROM employee e
+SELECT et.employeeType, Month(s.month) AS month, s.amount FROM employee e
 JOIN salary s ON e.employeeId = s.salaryId 
 JOIN employeeType et ON et.employeeTypeId = e.employeeTypeId
-GROUP BY e.employeeId, et.employeeType;
+GROUP BY et.employeeType, month, s.amount;
 ```
 
 ### 7. Employees ki totalsalary ko desc order me btao with name 
@@ -493,7 +492,6 @@ END;//
 ```
 
 ### 10. Student table me studnetname, fathername pr index bnani hai
-
 ```sql
 CREATE INDEX Stu_Fat_Ind ON student (studnetName, fatherName);
 ```
